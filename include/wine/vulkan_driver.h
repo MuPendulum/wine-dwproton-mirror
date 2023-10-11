@@ -232,6 +232,7 @@ struct vulkan_device
     uint64_t queue_count;
     struct vulkan_queue *queues;
     VkQueueFamilyProperties *queue_props;
+    BOOL low_latency_enabled;
 
     pthread_t signaller_thread;
     pthread_mutex_t signaller_mutex;
@@ -374,6 +375,7 @@ struct vulkan_funcs
     PFN_vkMapMemory p_vkMapMemory;
     PFN_vkMapMemory2KHR p_vkMapMemory2KHR;
     PFN_vkQueuePresentKHR p_vkQueuePresentKHR;
+    PFN_vkSetLatencySleepModeNV p_vkSetLatencySleepModeNV;
     PFN_vkQueueSubmit p_vkQueueSubmit;
     PFN_vkQueueSubmit2 p_vkQueueSubmit2;
     PFN_vkQueueSubmit2KHR p_vkQueueSubmit2KHR;
