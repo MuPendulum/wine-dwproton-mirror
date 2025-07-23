@@ -960,7 +960,7 @@
 @ stdcall PsLookupThreadByThreadId(ptr ptr)
 @ extern PsProcessType
 @ stub PsReferenceImpersonationToken
-@ stub PsReferencePrimaryToken
+@ stdcall PsReferencePrimaryToken(ptr)
 @ stdcall PsReferenceProcessFilePointer(ptr ptr)
 @ stdcall PsReleaseProcessExitSynchronization(ptr)
 @ stdcall PsRemoveCreateThreadNotifyRoutine(ptr)
