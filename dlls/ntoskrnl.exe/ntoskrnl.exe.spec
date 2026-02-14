@@ -568,6 +568,7 @@
 @ stdcall KeGetCurrentProcessorNumber() NtGetCurrentProcessorNumber
 @ stdcall KeGetCurrentProcessorNumberEx(ptr)
 @ stdcall KeGetCurrentThread()
+@ stdcall KeGetCurrentIrql()
 @ stub KeGetPreviousMode
 @ stub KeGetRecommendedSharedDataAlignment
 @ stub KeI386AbiosCall
