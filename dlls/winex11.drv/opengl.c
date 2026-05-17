@@ -1278,7 +1278,9 @@ static BOOL x11drv_context_create( int format, void *share, const int *attribLis
     }
 
     X11DRV_expect_error(gdi_display, GLXErrorHandler, NULL);
+    XUnlockDisplay(gdi_display);
     *context = create_glxcontext( format, share, attribList ? glx_attribs : NULL );
+    XLockDisplay(gdi_display);
     XSync(gdi_display, False);
     if ((err = X11DRV_check_error()) || !*context)
     {
