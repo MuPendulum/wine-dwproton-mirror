@@ -53,6 +53,11 @@ typedef struct _KSERVICE_TABLE_DESCRIPTOR
 
 KSERVICE_TABLE_DESCRIPTOR KeServiceDescriptorTable[4] = { { 0 } };
 
+#ifndef __WINE_KIRQL_DEFINED
+#define __WINE_KIRQL_DEFINED
+typedef unsigned char KIRQL;
+#endif
+
 #define MAX_SERVICE_NAME 260
 
 static TP_POOL *dpc_call_tp;
@@ -2705,6 +2710,15 @@ PRKTHREAD WINAPI KeGetCurrentThread(void)
     }
 
     return thread;
+}
+
+/***********************************************************************
+ *           KeGetCurrentIrql   (NTOSKRNL.EXE.@)
+ */
+KIRQL WINAPI KeGetCurrentIrql(void)
+{
+    /* Wine does not emulate real kernel IRQL; default to PASSIVE_LEVEL (0). */
+    return 0;
 }
 
 /*****************************************************
