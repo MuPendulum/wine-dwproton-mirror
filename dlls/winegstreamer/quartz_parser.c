@@ -1390,9 +1390,7 @@ static void send_buffer(struct parser_source *pin, struct parser *filter, const 
             {
                 struct wg_format format;
 
-                if (filter->output_compressed
-                        && pin->current_format.major_type != WG_MAJOR_TYPE_VIDEO
-                        && pin->current_format.major_type != WG_MAJOR_TYPE_AUDIO)
+                if (filter->output_compressed)
                 {
                     ERR("Ignoring dynamic format change attempt for compressed output.\n");
                     send_sample(pin, sample, buffer, 0, buffer->size, 0);

@@ -1767,17 +1767,12 @@ static HRESULT stream_descriptor_create(UINT32 id, IMFMediaType *media_type, IMF
 static NTSTATUS CDECL media_source_seek_cb( struct winedmo_stream *stream, UINT64 *pos )
 {
     struct media_source *source = CONTAINING_RECORD(stream, struct media_source, winedmo_stream);
-    UINT64 current = *pos;
     TRACE("stream %p, pos %p\n", stream, pos);
 
-    if (FAILED(IMFByteStream_SetCurrentPosition(source->stream, current))
-            && FAILED(IMFByteStream_Seek(source->stream, msoBegin, current, 0, &current)))
+    if (FAILED(IMFByteStream_Seek(source->stream, msoBegin, *pos, 0, pos)))
         return STATUS_UNSUCCESSFUL;
 
-    if (FAILED(IMFByteStream_GetCurrentPosition(source->stream, &current)))
-        current = *pos;
-
-    *pos = source->position = current;
+    source->position = *pos;
     return STATUS_SUCCESS;
 }
 
