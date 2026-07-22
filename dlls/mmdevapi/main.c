@@ -121,7 +121,7 @@ fail:
 
 static BOOL WINAPI init_driver(INIT_ONCE *once, void *param, void **context)
 {
-    static WCHAR default_list[] = L"pipewire,pulse,alsa,oss,coreaudio";
+    static WCHAR default_list[] = L"pulse,pipewire,alsa,oss,coreaudio";
     DriverFuncs driver;
     DWORD env_len;
     HKEY key;
