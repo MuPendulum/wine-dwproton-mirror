@@ -23,8 +23,11 @@
 
 int __cdecl main( int argc, char *argv[] )
 {
+    ULONG session_id = 0;
     HANDLE exit_event = NULL;
 
+    NtSetInformationProcess( GetCurrentProcess(), ProcessWineSessionId,
+                             &session_id, sizeof(session_id) );
     NtSetInformationProcess( GetCurrentProcess(), ProcessWineMakeProcessSystem,
                              &exit_event, sizeof(HANDLE *) );
     if (exit_event) WaitForSingleObject( exit_event, INFINITE );
