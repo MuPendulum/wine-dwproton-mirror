@@ -76,6 +76,12 @@ static inline LPCSTR debugstr_us( const UNICODE_STRING *us )
     return debugstr_wn( us->Buffer, us->Length / sizeof(WCHAR) );
 }
 
+static void *kmdf_functable[396];
+
+static WDF_COMPONENT_GLOBALS kmdf_globals = {
+    sizeof(WDF_COMPONENT_GLOBALS), NULL, NULL, kmdf_functable, {0}
+};
+
 static NTSTATUS WINAPI kmdf_LibraryCommission(void) {
     FIXME("stub\n");
     return STATUS_SUCCESS;
@@ -88,6 +94,17 @@ static NTSTATUS WINAPI kmdf_LibraryDecommission(void) {
 
 static NTSTATUS WINAPI kmdf_LibraryRegisterClient(WDF_BIND_INFO *info, PWDF_COMPONENT_GLOBALS *globals, void *context) {
     FIXME("stub %p %p %p\n", info, globals, context);
+
+    if (info->FuncCount != ARRAY_SIZE(kmdf_functable))
+    {
+        ERR("FuncTable size mismatch, we have %lu, client wants %lu\n",
+            (ULONG)ARRAY_SIZE(kmdf_functable), info->FuncCount);
+        return STATUS_UNSUCCESSFUL;
+    }
+
+    *(info->FuncTable) = kmdf_functable;
+    *globals = &kmdf_globals;
+
     return STATUS_SUCCESS;
 }
 
@@ -113,6 +130,9 @@ NTSTATUS WINAPI DriverEntry(DRIVER_OBJECT *driver, UNICODE_STRING *path)
     NTSTATUS status;
 
     TRACE("%p %s\n", driver, debugstr_us(path));
+
+    kmdf_globals.DriverObject = driver;
+    kmdf_globals.RegistryPath = path;
 
     status = WdfRegisterLibrary(&kmdf_wdf_library_info, path, &device_name);
 
