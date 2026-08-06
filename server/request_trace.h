@@ -3108,6 +3108,12 @@ static void dump_grant_process_admin_token_request( const struct grant_process_a
     fprintf( stderr, " handle=%04x", req->handle );
 }
 
+static void dump_set_process_session_request( const struct set_process_session_request *req )
+{
+    fprintf( stderr, " handle=%04x", req->handle );
+    fprintf( stderr, ", session_id=%08x", req->session_id );
+}
+
 static void dump_get_token_info_request( const struct get_token_info_request *req )
 {
     fprintf( stderr, " handle=%04x", req->handle );
@@ -3854,6 +3860,7 @@ static const dump_func req_dumpers[REQ_NB_REQUESTS] =
     (dump_func)dump_get_kernel_object_handle_request,
     (dump_func)dump_make_process_system_request,
     (dump_func)dump_grant_process_admin_token_request,
+    (dump_func)dump_set_process_session_request,
     (dump_func)dump_get_token_info_request,
     (dump_func)dump_create_linked_token_request,
     (dump_func)dump_create_completion_request,
@@ -4169,6 +4176,7 @@ static const dump_func reply_dumpers[REQ_NB_REQUESTS] =
     NULL,
     (dump_func)dump_get_kernel_object_handle_reply,
     (dump_func)dump_make_process_system_reply,
+    NULL,
     NULL,
     (dump_func)dump_get_token_info_reply,
     (dump_func)dump_create_linked_token_reply,
@@ -4486,6 +4494,7 @@ static const char * const req_names[REQ_NB_REQUESTS] =
     "get_kernel_object_handle",
     "make_process_system",
     "grant_process_admin_token",
+    "set_process_session",
     "get_token_info",
     "create_linked_token",
     "create_completion",
