@@ -76,7 +76,7 @@ static inline LPCSTR debugstr_us( const UNICODE_STRING *us )
     return debugstr_wn( us->Buffer, us->Length / sizeof(WCHAR) );
 }
 
-static void *kmdf_functable[396];
+static void *kmdf_functable[1024];
 
 static WDF_COMPONENT_GLOBALS kmdf_globals = {
     sizeof(WDF_COMPONENT_GLOBALS), NULL, NULL, kmdf_functable, {0}
@@ -95,7 +95,7 @@ static NTSTATUS WINAPI kmdf_LibraryDecommission(void) {
 static NTSTATUS WINAPI kmdf_LibraryRegisterClient(WDF_BIND_INFO *info, PWDF_COMPONENT_GLOBALS *globals, void *context) {
     FIXME("stub %p %p %p\n", info, globals, context);
 
-    if (info->FuncCount != ARRAY_SIZE(kmdf_functable))
+    if (info->FuncCount > ARRAY_SIZE(kmdf_functable))
     {
         ERR("FuncTable size mismatch, we have %lu, client wants %lu\n",
             (ULONG)ARRAY_SIZE(kmdf_functable), info->FuncCount);
