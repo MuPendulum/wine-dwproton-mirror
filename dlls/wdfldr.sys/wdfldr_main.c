@@ -185,7 +185,7 @@ static NTSTATUS find_service_for_version(UNICODE_STRING *out, HANDLE key, ULONG 
         status = NtEnumerateKey(key, idx, KeyNameInformation, info, info_size, &info_real_size);
         if (status == STATUS_BUFFER_OVERFLOW || status == STATUS_BUFFER_TOO_SMALL)
         {
-            info_size = info_real_size;
+            info_size = info_real_size + sizeof(WCHAR); /* because we need to bring our own L'\0' */
             info = RtlReAllocateHeap(GetProcessHeap(), 0, info, info_size);
             if (!info)
             {
@@ -193,6 +193,9 @@ static NTSTATUS find_service_for_version(UNICODE_STRING *out, HANDLE key, ULONG 
                 goto done;
             }
             status = NtEnumerateKey(key, idx, KeyNameInformation, info, info_size, &info_real_size);
+
+            /* KeyNameInformation is not null terminated */
+            ((WCHAR *)info)[info_real_size / sizeof(WCHAR)] = L'\0';
         }
         if (status == STATUS_NO_MORE_ENTRIES)
             break;
