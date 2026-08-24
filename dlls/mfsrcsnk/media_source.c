@@ -1767,17 +1767,14 @@ static HRESULT stream_descriptor_create(UINT32 id, IMFMediaType *media_type, IMF
 static NTSTATUS CDECL media_source_seek_cb( struct winedmo_stream *stream, UINT64 *pos )
 {
     struct media_source *source = CONTAINING_RECORD(stream, struct media_source, winedmo_stream);
-    UINT64 current = *pos;
     TRACE("stream %p, pos %p\n", stream, pos);
 
-    if (FAILED(IMFByteStream_SetCurrentPosition(source->stream, current))
-            && FAILED(IMFByteStream_Seek(source->stream, msoBegin, current, 0, &current)))
+    if (FAILED(IMFByteStream_SetCurrentPosition(source->stream, *pos)))
+        return STATUS_UNSUCCESSFUL;
+    if (FAILED(IMFByteStream_GetCurrentPosition(source->stream, pos)))
         return STATUS_UNSUCCESSFUL;
 
-    if (FAILED(IMFByteStream_GetCurrentPosition(source->stream, &current)))
-        current = *pos;
-
-    *pos = source->position = current;
+    source->position = *pos;
     return STATUS_SUCCESS;
 }
 
@@ -1879,7 +1876,7 @@ static WCHAR *get_byte_stream_url(IMFByteStream *stream, const WCHAR *url)
         if (FAILED(hr = IMFAttributes_GetString(attributes, &MF_BYTESTREAM_ORIGIN_NAME,
                 buffer, ARRAY_SIZE(buffer), &size)))
             WARN("Failed to get MF_BYTESTREAM_ORIGIN_NAME got size %#x, hr %#lx\n", size, hr);
-        else
+        else if (*buffer) /* an empty origin name does not override the url */
             url = buffer;
         IMFAttributes_Release(attributes);
     }
