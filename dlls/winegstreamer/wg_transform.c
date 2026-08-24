@@ -1188,25 +1188,14 @@ static void set_sample_flags_from_buffer(struct wg_sample *sample, GstBuffer *bu
     timestamps = gst_buffer_get_reference_timestamp_meta(buffer, transform_timestamp);
     gst_caps_unref(transform_timestamp);
 
-    /* for videos, prefer decoder output PTS over the preserved input timestamp */
+    /* video decoders reorder B-frames and output display-order PTS, whereas the preserved
+     * timestamp is in decode order and would run backwards, so prefer the buffer PTS */
     if (is_video && GST_BUFFER_PTS_IS_VALID(buffer))
-    {
-        sample->flags |= WG_SAMPLE_FLAG_HAS_PTS | WG_SAMPLE_FLAG_PRESERVE_TIMESTAMPS;
-        sample->pts = GST_BUFFER_PTS(buffer) / 100;
-        if (GST_BUFFER_DURATION_IS_VALID(buffer))
-        {
-            GstClockTime duration = GST_BUFFER_DURATION(buffer) / 100;
+        timestamps = NULL;
 
-            duration = (duration * sample->size) / total_size;
-            GST_BUFFER_DURATION(buffer) -= duration * 100;
-            GST_BUFFER_PTS(buffer) += duration * 100;
-
-            sample->flags |= WG_SAMPLE_FLAG_HAS_DURATION;
-            sample->duration = duration;
-        }
-    }
-    else if (timestamps)
+    if (timestamps)
     {
+        /* GStreamer can overwrite our timestamps, so we use the wg-transform timestamps instead */
         sample->flags |= WG_SAMPLE_FLAG_HAS_PTS | WG_SAMPLE_FLAG_PRESERVE_TIMESTAMPS;
         sample->pts = timestamps->timestamp / 100;
         if (timestamps->duration != GST_CLOCK_TIME_NONE)
@@ -1220,6 +1209,8 @@ static void set_sample_flags_from_buffer(struct wg_sample *sample, GstBuffer *bu
         if (GST_BUFFER_PTS_IS_VALID(buffer))
         {
             sample->flags |= WG_SAMPLE_FLAG_HAS_PTS;
+            if (is_video)
+                sample->flags |= WG_SAMPLE_FLAG_PRESERVE_TIMESTAMPS;
             sample->pts = GST_BUFFER_PTS(buffer) / 100;
         }
         if (GST_BUFFER_DURATION_IS_VALID(buffer))
