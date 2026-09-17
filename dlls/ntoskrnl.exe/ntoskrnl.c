@@ -2582,6 +2582,15 @@ HANDLE WINAPI PsGetProcessId(PEPROCESS process)
 }
 
 /*********************************************************************
+ *           PsGetProcessExitStatus    (NTOSKRNL.@)
+ */
+NTSTATUS WINAPI PsGetProcessExitStatus(PEPROCESS process)
+{
+    FIXME( "process %p stub.\n", process );
+    return STATUS_PENDING;
+}
+
+/*********************************************************************
  *           PsGetProcessPeb    (NTOSKRNL.@)
  */
 PEB *WINAPI PsGetProcessPeb(PEPROCESS process)
