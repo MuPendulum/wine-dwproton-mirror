@@ -172,6 +172,7 @@ extern COLORREF get_sys_color( int index );
 extern HBRUSH get_sys_color_brush( unsigned int index );
 extern HPEN get_sys_color_pen( unsigned int index );
 extern UINT get_system_dpi(void);
+extern BOOL get_font_smoothing_aa( UINT *font_aa, UINT *subpixel_orientation_aa );
 extern int get_system_metrics( int index );
 extern UINT get_thread_dpi(void);
 extern UINT set_thread_dpi_awareness_context( UINT context );
@@ -203,6 +204,7 @@ extern BOOL get_gpu_info_from_uuid( const GUID *uuid, LUID *luid, UINT32 *node_m
 extern BOOL get_float_gamma_ramp( float *ramp, LONG *serial );
 extern BOOL get_global_gamma_ramp( void *data );
 extern BOOL set_global_gamma_ramp( void *data );
+extern BOOL fs_hack_is_fsr(BOOL *lite, float *sharpness);
 
 extern void fixup_device_id( const struct pci_id **pci_id );
 
