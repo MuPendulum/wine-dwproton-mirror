@@ -171,6 +171,14 @@ static BOOL use_x11_launcher_driver( const WCHAR *image, const WCHAR *name )
         path_contains( image, L"\\Program Files\\Origin\\" ))
         return TRUE;
 
+    if (!wcsicmp( name, L"launcher.exe" ) ||
+        !wcsicmp( name, L"launcher_main.exe" ) ||
+        !wcsicmp( name, L"nikke_launcher.exe" ) ||
+        !wcsicmp( name, L"tbs_browser.exe" ) ||
+        !wcsicmp( name, L"INTLWebViewHelper.exe" ) ||
+        !wcsicmp( name, L"msedgewebview2.exe" ))
+        return TRUE;
+
     return FALSE;
 }
 
